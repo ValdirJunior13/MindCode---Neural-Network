@@ -1,0 +1,10 @@
+*.log
+dockerfile
+README.md
+run.bat
+.python-version
+/fastc/
+/codet5p-6b/
+/__pycache__/
+.gitignore
+```
