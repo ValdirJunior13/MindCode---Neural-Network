@@ -15,9 +15,9 @@ Projeto desenvolvido como parte da disciplina de PI4 na Universidade Federal Rur
 
 
 ```bash
-  cd my-project  
-  pip install -r requirements.tx 
-  chmod +x run.sh  
+  cd my-project  \
+  pip install -r requirements.tx \
+  chmod +x run.sh  \
   ./run.sh  ${ cpu | cuda }
 ```
 
@@ -28,7 +28,7 @@ Projeto desenvolvido como parte da disciplina de PI4 na Universidade Federal Rur
  
 
 ```bash
-  docker build -t . fastnetwork:latest
+  docker build -t . fastnetwork:latest \
   docker run -p 8000:8000 8080:8080 fastnetwork:latest
 ```
 > OBS: docker build requirement GPU
@@ -37,7 +37,7 @@ Projeto desenvolvido como parte da disciplina de PI4 na Universidade Federal Rur
 
 
 ```bash
-  Windows +r
+  Windows +r   \
   run.bat ${ cpu | cuda }
 ```
 > OBS: run.bat enable device "cuda" for default 
@@ -49,7 +49,7 @@ Projeto desenvolvido como parte da disciplina de PI4 na Universidade Federal Rur
 #### Retorna todos os itens
 
 ```http
-  GET /localhost:8000/docs
+  GET localhost:8000/docs
 ```
 
 
