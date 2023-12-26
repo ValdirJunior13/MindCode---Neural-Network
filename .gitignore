@@ -1,0 +1,7 @@
+# Ignorar arquivos que terminam com .log
+*.log
+.python-version
+/codet5p-6b/
+# Ignorar uma pasta chamada "nome-da-pasta"
+/fastc/
+/__pycache__/

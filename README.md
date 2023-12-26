@@ -12,9 +12,9 @@ Projeto desenvolvido como parte da disciplina de PI4 na Universidade Federal Rur
 
 ## Stack utilizada
 
-**Front-end:** 
+**Front-end:**  
 
-**Back-end:** 
+**Back-end:** Python =<3.8
 
 
 # Roadmap

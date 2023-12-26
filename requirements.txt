@@ -1,0 +1,4 @@
+requests
+fastapi
+accelerate
+fschat
