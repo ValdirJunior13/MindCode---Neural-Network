@@ -1,69 +1,60 @@
-import openai
 import os
 import tkinter as tk
 from tkinter import filedialog
+from transformers import RobertaTokenizer, RobertaForCausalLM
 
 root = tk.Tk()
 root.withdraw()
 
-# Abre a caixa de diálogo de seleção de arquivos e obtém o caminho do arquivo
-filename = filedialog.askopenfilename()
+# Abrir a caixa de diálogo de seleção de arquivos e obter o caminho do arquivo
+filename = filedialog.askopenfilename(filetypes=[("Python files", "*.py")])
 
 print("Caminho do arquivo selecionado:", filename)
 
-openai.api_key = "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"
-
-# Escolha um modelo da open ai (por exemplo, davinci)
-model = "gpt-3.5-turbo-0125"
-
-# Função para ler um arquivo Python e identificar erros
-
-
-def identify_errors(filename):
+# Verificar se o usuário selecionou um arquivo
+if filename:
+    # Ler o conteúdo do arquivo
     with open(filename, 'r') as f:
         code = f.read()
 
-    # Verifica os erros no código usando exec
-    try:
-        exec(code)
-        return "Nenhum erro encontrado."
-    except Exception as e:
-        return str(e)
+    # Inicializa o tokenizador e o modelo
+    tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+    model = RobertaForCausalLM.from_pretrained('roberta-base')
 
-# Função para gerar uma solução para os erros identificados
+    # Função para identificar erros no código Python
+    def identify_errors(code):
+        try:
+            exec(code)
+            return "Nenhum erro encontrado."
+        except Exception as e:
+            return str(e)
 
+    # Função para gerar uma solução para os erros identificados
+    def generate_solution(errors):
+        # Tokeniza o prompt
+        inputs = tokenizer.encode(
+            "Erros identificados:\n\n" + errors + "\n\nSolução:\n\n", return_tensors="pt")
 
-def generate_solution(errors):
-    prompt = "Erros identificados:\n\n" + errors + "\n\nSolução:\n\n"
-    response = openai.Completion.create(
-        engine=model,
-        prompt=prompt,
-        temperature=0.9,
-        max_tokens=300,
-        top_p=1.0,
-        frequency_penalty=0.0,
-        presence_penalty=0.0,
-        stop=["\n"])
-    return response["choices"][0]["text"]
+        # Gera o texto
+        outputs = model.generate(inputs, max_length=300, do_sample=True)
 
+        # Decodifica o texto gerado
+        return tokenizer.decode(outputs[0])
 
-# Verifica se o arquivo inserido pelo usuário é válido
-if not os.path.isfile(filename):
-    print("O arquivo especificado não é válido.")
-    exit()
+    # Identificar os erros no código do arquivo
+    errors = identify_errors(code)
+    print("Erros identificados:", errors)
 
-# Identifica os erros no código
-errors = identify_errors(filename)
-print("Erros identificados:", errors)
+    # Se houver erros, gerar uma solução
+    if errors != "Nenhum erro encontrado.":
+        solution = generate_solution(errors)
+        print("\nSolução proposta:\n", solution)
 
-# Se houver erros, gera uma solução
-if errors != "Nenhum erro encontrado.":
-    solution = generate_solution(errors)
-    print("\nSolução proposta:\n", solution)
-
-    # Escreve os erros e a solução em um arquivo .txt
-    with open('errors_and_solution.txt', 'w') as f:
-        f.write("Erros identificados:\n")
-        f.write(errors)
-        f.write("\n\nSolução proposta:\n")
-        f.write(solution)
+        # Escrever os erros e a solução em um arquivo .txt
+        with open('errors_and_solution.txt', 'w') as f:
+            f.write("Erros identificados:\n")
+            f.write(errors)
+            f.write("\n\nSolução proposta:\n")
+            f.write(solution)
+else:
+    print("Nenhum arquivo selecionado.")
